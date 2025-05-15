@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowLeft, Key, Lock, Unlock, Shield } from "lucide-react";
+import { ArrowLeft, Lock, Unlock, Shield } from "lucide-react";
 
 export default function AboutPage() {
   return (
@@ -26,7 +26,7 @@ export default function AboutPage() {
             </Link>
           </nav>
           <div className="md:hidden">
-            <Button variant="ghost" size="icon" className="text-zinc-700">
+            <Button variant="ghost" size="icon" className="text-zinc-700" aria-label="Menu">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -164,7 +164,7 @@ export default function AboutPage() {
                   </div>
 
                   <div className="bg-zinc-50 p-6 rounded-xl">
-                    <h3 className="text-lg font-medium text-zinc-900 mb-3">Fungsi Euler's Totient</h3>
+                    <h3 className="text-lg font-medium text-zinc-900 mb-3">Fungsi Euler&apos;s Totient</h3>
                     <p className="text-sm text-zinc-600 leading-relaxed">
                       Fungsi φ(n) menghitung jumlah bilangan bulat positif kurang dari n yang relatif prima dengan n.
                       Untuk dua bilangan prima p dan q, φ(p × q) = (p - 1) × (q - 1).
@@ -278,7 +278,7 @@ export default function AboutPage() {
               </Link>
             </div>
 
-            <div className="text-sm text-zinc-400">
+            <div className="text-base text-zinc-400">
               &copy; {new Date().getFullYear()} RSACrypto. All rights reserved.
             </div>
           </div>

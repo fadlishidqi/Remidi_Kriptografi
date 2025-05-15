@@ -32,7 +32,7 @@ export async function generateRSAKeyPair(keySize = 2048) {
     }
   } catch (error) {
     console.error("Error generating RSA key pair:", error)
-    throw new Error("Gagal membuat pasangan kunci RSA: " + (error as Error).message)
+    throw new Error("Gagal membuat pasangan kunci RSA: " + (error instanceof Error ? error.message : String(error)))
   }
 }
 
@@ -80,14 +80,14 @@ export async function encryptRSA(plaintext: string, publicKeyString: string) {
 
     // Convert encrypted data to base64
     return arrayBufferToBase64(encryptedData)
-  } catch (error: any) {
-    let msg = error?.message || error;
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error)
     // User friendly error
     if (
       msg.includes("Cannot read properties of") ||
       msg.includes("key data is not a valid JWK object")
     ) {
-      msg = "Kunci publik yang Anda masukkan tidak valid atau tidak sesuai format. Pastikan Anda menggunakan kunci publik RSA yang benar dan tidak ada karakter yang terpotong.";
+      throw new Error("Gagal mengenkripsi pesan: Kunci publik yang Anda masukkan tidak valid atau tidak sesuai format. Pastikan Anda menggunakan kunci publik RSA yang benar dan tidak ada karakter yang terpotong.");
     }
     throw new Error("Gagal mengenkripsi pesan: " + msg)
   }
@@ -120,12 +120,12 @@ export async function decryptRSA(ciphertext: string, privateKeyString: string) {
           name: "RSA-OAEP",
           hash: "SHA-256",
         },
-        false, // not extractable
-        ["decrypt"], // key usage
+        false,
+        ["decrypt"],
       )
-    } catch (error: any) {
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error)
       // User friendly for JWK parsing errors
-      let msg = error?.message || error;
       if (
         msg.includes('JWK member "qi"') ||
         msg.includes("base64url") ||
@@ -135,7 +135,7 @@ export async function decryptRSA(ciphertext: string, privateKeyString: string) {
           "Kunci privat yang Anda masukkan tidak valid atau tidak sesuai format. Pastikan Anda menggunakan kunci privat RSA yang benar dan tidak ada karakter yang terpotong."
         )
       }
-      throw error;
+      throw new Error(msg)
     }
 
     // Decode the base64 ciphertext
@@ -158,8 +158,8 @@ export async function decryptRSA(ciphertext: string, privateKeyString: string) {
         privateKey,
         encryptedData,
       )
-    } catch (error: any) {
-      let msg = error?.message || error;
+    } catch (error) {
+      let msg = error instanceof Error ? error.message : String(error)
       if (
         msg.includes('JWK member "qi"') ||
         msg.includes("base64url") ||
@@ -179,8 +179,8 @@ export async function decryptRSA(ciphertext: string, privateKeyString: string) {
     // Decode the decrypted data
     const decoder = new TextDecoder()
     return decoder.decode(decryptedData)
-  } catch (error: any) {
-    let msg = error?.message || error;
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error)
     throw new Error("Gagal mendekripsi pesan: " + msg)
   }
 }

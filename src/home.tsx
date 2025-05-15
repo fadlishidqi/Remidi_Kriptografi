@@ -66,25 +66,25 @@ export default function Home() {
       {/* Header */}
       <header className="border-b border-zinc-100 sticky top-0 z-10 bg-white/80 backdrop-blur-sm">
         <div className="container mx-auto max-w-7xl flex items-center justify-between py-4 px-4 sm:px-6">
-          <a href="/" className="text-xl font-medium tracking-tight">
+          <Link href="/" className="text-xl font-medium tracking-tight">
             RSA<span className="text-emerald-600">Crypto</span>
-          </a>
+          </Link>
           <nav className="hidden md:flex items-center gap-8">
-            <a href="/" className="text-sm font-medium text-zinc-900 hover:text-emerald-600 transition-colors">
+            <Link href="/" className="text-sm font-medium text-zinc-900 hover:text-emerald-600 transition-colors">
               Beranda
-            </a>
-            <a
+            </Link>
+            <Link
               href="/encrypt-decrypt"
               className="text-sm font-medium text-zinc-900 hover:text-emerald-600 transition-colors"
             >
               Enkripsi/Dekripsi
-            </a>
-            <a href="/about" className="text-sm font-medium text-zinc-900 hover:text-emerald-600 transition-colors">
+            </Link>
+            <Link href="/about" className="text-sm font-medium text-zinc-900 hover:text-emerald-600 transition-colors">
               Tentang RSA
-            </a>
+            </Link>
           </nav>
           <div className="md:hidden">
-            <Button variant="ghost" size="icon" className="text-zinc-700">
+            <Button variant="ghost" size="icon" className="text-zinc-700" aria-label="Menu">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -412,25 +412,25 @@ export default function Home() {
         <div className="container mx-auto max-w-7xl px-4 sm:px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8">
             <div className="flex flex-col items-center md:items-start">
-              <a href="/" className="text-xl font-medium tracking-tight mb-2">
+              <Link href="/" className="text-xl font-medium tracking-tight mb-2">
                 RSA<span className="text-emerald-600">Crypto</span>
-              </a>
+              </Link>
               <p className="text-sm text-zinc-500">Keamanan data dengan kriptografi kunci publik</p>
             </div>
 
             <div className="flex gap-8">
-              <a href="/" className="text-sm text-zinc-500 hover:text-emerald-600 transition-colors">
+              <Link href="/" className="text-sm text-zinc-500 hover:text-emerald-600 transition-colors">
                 Beranda
-              </a>
-              <a href="/encrypt-decrypt" className="text-sm text-zinc-500 hover:text-emerald-600 transition-colors">
+              </Link>
+              <Link href="/encrypt-decrypt" className="text-sm text-zinc-500 hover:text-emerald-600 transition-colors">
                 Enkripsi/Dekripsi
-              </a>
-              <a href="/about" className="text-sm text-zinc-500 hover:text-emerald-600 transition-colors">
+              </Link>
+              <Link href="/about" className="text-sm text-zinc-500 hover:text-emerald-600 transition-colors">
                 Tentang RSA
-              </a>
+              </Link>
             </div>
 
-            <div className="text-sm text-zinc-400">
+            <div className="text-base text-zinc-400">
               &copy; {new Date().getFullYear()} RSACrypto. All rights reserved.
             </div>
           </div>

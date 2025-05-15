@@ -10,6 +10,7 @@ import { Lock, Unlock, RefreshCw, AlertCircle, Key, Shield, ChevronRight, CheckC
 import { useSearchParams, useRouter } from "next/navigation"
 import { generateRSAKeyPair, encryptRSA, decryptRSA } from "@/lib/rsa-utils"
 import { toast, Toaster } from "sonner"
+import Link from "next/link"
 
 const ENCRYPTED_ANIMATION = [
   "7f2e3b1a8c6d4e5f9b8a7c6d5e4f3a2b",
@@ -112,7 +113,6 @@ export default function EncryptDecryptPage() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
-  // --- [SONNER] Remove showToast, use toast() instead
 
   // Typewriter for demo encrypted output
   const typedEncrypted = useTypewriterLoop(ENCRYPTED_ANIMATION, 30, 600)
@@ -178,33 +178,33 @@ export default function EncryptDecryptPage() {
         toast.success("Disalin ke clipboard!")
         setTimeout(() => setCopied(false), 1500)
       })
-      .catch((err) => {
+      .catch(() => {
         toast.error("Gagal menyalin ke clipboard")
       })
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-50 to-white flex flex-col">
-      <Toaster richColors closeButton /> {/* Sonner Toaster */}
+      <Toaster richColors closeButton />
 
       {/* Header */}
       <header className="border-b border-zinc-100 sticky top-0 z-10 bg-white/90 backdrop-blur-md shadow-sm">
         <div className="container mx-auto max-w-7xl flex items-center justify-between py-4 px-4 sm:px-6">
-          <a href="/" className="text-xl font-semibold tracking-tight flex items-center">
+          <Link href="/" className="text-xl font-semibold tracking-tight flex items-center">
             <Shield className="h-6 w-6 mr-2 text-emerald-600" />
             <span>RSA<span className="text-emerald-600">Crypto</span></span>
-          </a>
+          </Link>
           <nav className="hidden md:flex items-center gap-8">
-            <a href="/" className="text-sm font-medium text-zinc-500 hover:text-emerald-600 transition-colors">
+            <Link href="/" className="text-sm font-medium text-zinc-500 hover:text-emerald-600 transition-colors">
               Beranda
-            </a>
-            <a href="/encrypt-decrypt" className="text-sm font-medium relative text-zinc-900 hover:text-emerald-600 transition-colors">
+            </Link>
+            <Link href="/encrypt-decrypt" className="text-sm font-medium relative text-zinc-900 hover:text-emerald-600 transition-colors">
               Enkripsi/Dekripsi
               <span className="absolute -bottom-1.5 left-0 right-0 h-0.5 bg-emerald-600 rounded-full"></span>
-            </a>
-            <a href="/about" className="text-sm font-medium text-zinc-500 hover:text-emerald-600 transition-colors">
+            </Link>
+            <Link href="/about" className="text-sm font-medium text-zinc-500 hover:text-emerald-600 transition-colors">
               Tentang RSA
-            </a>
+            </Link>
           </nav>
         </div>
       </header>
@@ -487,18 +487,18 @@ export default function EncryptDecryptPage() {
         <div className="container mx-auto max-w-7xl px-4 sm:px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8">
             <div className="flex flex-col items-center md:items-start">
-              <a href="/" className="text-xl font-semibold tracking-tight flex items-center mb-2">
+              <Link href="/" className="text-xl font-semibold tracking-tight flex items-center mb-2">
                 <Shield className="h-5 w-5 mr-2 text-emerald-600" />
                 <span>RSA<span className="text-emerald-600">Crypto</span></span>
-              </a>
+              </Link>
               <p className="text-sm text-zinc-500">Keamanan data dengan kriptografi kunci publik</p>
             </div>
             <div className="flex gap-8">
-              <a href="/" className="text-sm text-zinc-500 hover:text-emerald-600 transition-colors">Beranda</a>
-              <a href="/encrypt-decrypt" className="text-sm text-zinc-500 hover:text-emerald-600 transition-colors">Enkripsi/Dekripsi</a>
-              <a href="/about" className="text-sm text-zinc-500 hover:text-emerald-600 transition-colors">Tentang RSA</a>
+              <Link href="/" className="text-sm text-zinc-500 hover:text-emerald-600 transition-colors">Beranda</Link>
+              <Link href="/encrypt-decrypt" className="text-sm text-zinc-500 hover:text-emerald-600 transition-colors">Enkripsi/Dekripsi</Link>
+              <Link href="/about" className="text-sm text-zinc-500 hover:text-emerald-600 transition-colors">Tentang RSA</Link>
             </div>
-            <div className="text-sm text-zinc-400">
+            <div className="text-base text-zinc-400">
               &copy; {new Date().getFullYear()} RSACrypto. All rights reserved.
             </div>
           </div>
