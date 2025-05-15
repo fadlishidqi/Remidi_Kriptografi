@@ -1,7 +1,66 @@
-import { ArrowRight, Lock, Unlock, Info, ChevronRight } from "lucide-react"
+"use client"
+
+import { useState, useEffect } from "react"
+import { ArrowRight, Lock, Unlock, Info, ChevronRight, Shield, Key } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
+
+const ENCRYPTED_ANIMATION = [
+  "7f2e3b1a8c6d4e5f9b8a7c6d5e4f3a2b",
+  "a8b7c6d5e4f3a2b17f2e3b1a8c6d4e5f",
+  "d4e5f3a2b7f2e3b1a8c6d5e4f3a2b9b8",
+  "b1a8c6d4e5f7f2e3b1a8c6d5e4f3a2b9",
+];
+
+function useTypewriterLoop(texts: string[], speed = 50, pause = 700) {
+  const [text, setText] = useState("");
+  const [textIndex, setTextIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (!deleting) {
+      if (charIndex < texts[textIndex].length) {
+        timeout = setTimeout(() => {
+          setText((t) => t + texts[textIndex][charIndex]);
+          setCharIndex((c) => c + 1);
+        }, speed);
+      } else {
+        timeout = setTimeout(() => setDeleting(true), pause);
+      }
+    } else {
+      if (charIndex > 0) {
+        timeout = setTimeout(() => {
+          setText((t) => t.slice(0, -1));
+          setCharIndex((c) => c - 1);
+        }, speed / 2);
+      } else {
+        setDeleting(false);
+        setTextIndex((i) => (i + 1) % texts.length);
+      }
+    }
+    return () => clearTimeout(timeout);
+  }, [charIndex, deleting, texts, textIndex, speed, pause]);
+
+  useEffect(() => {
+    setCharIndex(0);
+    setText("");
+  }, [textIndex, texts]);
+
+  return text;
+}
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
+  const typedText = useTypewriterLoop(ENCRYPTED_ANIMATION, 40, 900);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       {/* Header */}
@@ -47,45 +106,109 @@ export default function Home() {
       </header>
 
       <main className="flex-1">
-        {/* Hero section */}
-        <section className="py-16 md:py-24 lg:py-32 bg-gradient-to-b from-white to-zinc-50">
-          <div className="container mx-auto max-w-7xl px-4 sm:px-6">
-            <div className="max-w-3xl mx-auto text-center space-y-6">
-              <div className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-medium">
-                Keamanan Data Modern
-              </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 leading-tight">
-                Amankan Pesan Anda dengan <span className="text-emerald-600">Kriptografi RSA</span>
-              </h1>
-              <p className="text-lg md:text-xl text-zinc-500 max-w-2xl mx-auto">
-                Enkripsi dan dekripsi pesan dengan algoritma kriptografi kunci publik yang aman dan terpercaya.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
-                <a href="/encrypt-decrypt">
-                  <Button className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white rounded-full h-12 px-8 transition-all">
-                    Mulai Enkripsi
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </a>
+        {/* Hero section - New Design */}
+        <div className="relative overflow-hidden bg-gradient-to-b from-white to-zinc-50">
+          <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-[0.15]" />
 
-                <a href="/about">
-                  <Button
-                    variant="outline"
-                    className="w-full sm:w-auto rounded-full h-12 px-8 border-zinc-200 hover:bg-zinc-50 transition-all"
-                  >
-                    Pelajari RSA
-                    <Info className="ml-2 h-4 w-4" />
+          <div className="container relative mx-auto max-w-7xl pt-20 pb-16 md:pt-24 md:pb-20 lg:pt-32 lg:pb-24 px-4 sm:px-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <div className="inline-flex items-center px-3 py-1 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-600">
+                  <Shield className="w-4 h-4 mr-2" />
+                  <span className="text-sm font-medium">Keamanan Data Modern</span>
+                </div>
+
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 leading-tight">
+                  Amankan Pesan Anda dengan <span className="text-emerald-600">Kriptografi RSA</span>
+                </h1>
+
+                <p className="text-xl text-zinc-500 max-w-xl">
+                  Enkripsi dan dekripsi pesan dengan algoritma kriptografi kunci publik yang aman dan terpercaya.
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                    <Link href="/encrypt-decrypt" className="flex items-center">
+                      <Lock className="mr-2 h-4 w-4" /> Mulai Enkripsi
+                    </Link>
                   </Button>
-                </a>
+                  <Button size="lg" variant="outline" className="border-zinc-200 hover:bg-zinc-50">
+                    <Link href="/about" className="flex items-center">
+                      <Info className="mr-2 h-4 w-4" /> Pelajari RSA
+                    </Link>
+                  </Button>
+                </div>
+
+                <div className="flex items-center gap-2 text-sm text-zinc-500">
+                  <div className="flex -space-x-2">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div
+                        key={i}
+                        className="w-8 h-8 rounded-full border-2 border-white bg-emerald-100 flex items-center justify-center text-xs font-medium text-emerald-600"
+                      >
+                        {i}
+                      </div>
+                    ))}
+                  </div>
+                  <span>Bergabung dengan ribuan pengguna yang mengamankan data mereka dengan RSA</span>
+                </div>
+              </div>
+
+              <div className="relative hidden lg:block">
+                <div className="relative">
+                  <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-emerald-200 to-blue-200 blur opacity-60" />
+                  <div className="relative rounded-xl bg-white border border-zinc-100 p-6 overflow-hidden shadow-lg">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-100 rounded-full -mr-16 -mt-16 blur-2xl" />
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 mb-6">
+                        <div className="bg-emerald-50 p-2 rounded-lg">
+                          <Key className="h-5 w-5 text-emerald-600" />
+                        </div>
+                        <div className="text-sm font-medium">RSA Encryption Demo</div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <div className="text-xs text-zinc-500">Pesan</div>
+                        <div className="bg-zinc-50 rounded-md p-3 font-mono text-sm">
+                          Hello, RSA encryption!
+                        </div>
+                      </div>
+
+                      <div className="flex gap-4 text-center">
+                        <div className="flex-1">
+                          <div className="text-xs text-zinc-500">Public Key (e)</div>
+                          <div className="bg-zinc-50/60 rounded-md p-2 font-mono text-xs mt-1 truncate">
+                            65537
+                          </div>
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-xs text-zinc-500">Modulus (n)</div>
+                          <div className="bg-zinc-50/60 rounded-md p-2 font-mono text-xs mt-1 truncate">
+                            83f...23a1
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <div className="text-xs text-zinc-500">Terenkripsi</div>
+                        <div className="bg-emerald-50 border border-emerald-100 rounded-md p-3 font-mono text-xs overflow-hidden h-[30px]">
+                          <span>{typedText}</span>
+                          <span className="animate-pulse text-emerald-600">|</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
         {/* Features section */}
         <section className="py-16 bg-zinc-50">
           <div className="container mx-auto max-w-7xl px-4 sm:px-6">
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+              {/* Enkripsi Pesan */}
               <div className="bg-white p-8 rounded-2xl shadow-sm border border-zinc-100 flex flex-col h-full items-center text-center transition-all hover:shadow-md hover:border-emerald-100">
                 <div className="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center mb-6">
                   <Lock className="h-6 w-6 text-emerald-600" />
@@ -94,16 +217,17 @@ export default function Home() {
                 <p className="text-zinc-500 text-sm leading-relaxed flex-grow">
                   Enkripsi pesan Anda menggunakan kunci publik RSA untuk menjaga kerahasiaan informasi.
                 </p>
-                <a
+                <Link
                   href="/encrypt-decrypt"
                   className="mt-6 inline-flex items-center text-sm font-medium text-emerald-600 hover:text-emerald-700"
                 >
                   Coba Enkripsi
                   <ChevronRight className="ml-1 h-4 w-4" />
-                </a>
+                </Link>
               </div>
 
-              <div className="bg-white p-8 rounded-2xl shadow-sm border border-zinc-100 flex flex-col h-full items-center text-center transition-all hover:shadow-md hover:border-emerald-100">
+              {/* Dekripsi Pesan */}
+              <div className="bg-white p-8 rounded-2xl shadow-sm border border-zinc-100 flex flex-col h-full items-center text-center transition-all hover:shadow-md hover:border-blue-100">
                 <div className="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center mb-6">
                   <Unlock className="h-6 w-6 text-blue-600" />
                 </div>
@@ -111,16 +235,17 @@ export default function Home() {
                 <p className="text-zinc-500 text-sm leading-relaxed flex-grow">
                   Dekripsi pesan terenkripsi menggunakan kunci privat RSA untuk membaca pesan asli.
                 </p>
-                <a
+                <Link
                   href="/encrypt-decrypt?tab=decrypt"
                   className="mt-6 inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-700"
                 >
                   Coba Dekripsi
                   <ChevronRight className="ml-1 h-4 w-4" />
-                </a>
+                </Link>
               </div>
 
-              <div className="bg-white p-8 rounded-2xl shadow-sm border border-zinc-100 flex flex-col h-full items-center text-center transition-all hover:shadow-md hover:border-emerald-100">
+              {/* Pelajari RSA */}
+              <div className="bg-white p-8 rounded-2xl shadow-sm border border-zinc-100 flex flex-col h-full items-center text-center transition-all hover:shadow-md hover:border-amber-100">
                 <div className="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center mb-6">
                   <Info className="h-6 w-6 text-amber-600" />
                 </div>
@@ -128,13 +253,13 @@ export default function Home() {
                 <p className="text-zinc-500 text-sm leading-relaxed flex-grow">
                   Pelajari cara kerja algoritma RSA, termasuk matematika di balik keamanannya.
                 </p>
-                <a
+                <Link
                   href="/about"
                   className="mt-6 inline-flex items-center text-sm font-medium text-amber-600 hover:text-amber-700"
                 >
                   Baca Selengkapnya
                   <ChevronRight className="ml-1 h-4 w-4" />
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -233,12 +358,12 @@ export default function Home() {
                   </div>
                 </div>
 
-                <a href="/about">
+                <Link href="/about">
                   <Button variant="link" className="text-emerald-600 hover:text-emerald-700 p-0 h-auto font-medium">
                     Pelajari lebih lanjut tentang RSA
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
-                </a>
+                </Link>
               </div>
 
               <div className="relative">
